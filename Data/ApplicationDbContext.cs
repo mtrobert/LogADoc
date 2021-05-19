@@ -15,5 +15,6 @@ namespace LogADoc.Data
         }
 
         public DbSet<Item> Items { get; set; }
+        public DbSet<Status> Statoos { get; set; }
     }
 }
