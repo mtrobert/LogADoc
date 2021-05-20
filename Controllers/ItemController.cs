@@ -1,6 +1,7 @@
 ﻿using LogADoc.Data;
 using LogADoc.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,13 @@ namespace LogADoc.Controllers
         //GET-Create
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> StatusDropdown = _db.Statoos.Select(i => new SelectListItem 
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
+
+            ViewBag.StatusDropdown = StatusDropdown;
             return View();
         }
 
@@ -96,7 +104,7 @@ namespace LogADoc.Controllers
 
         }
 
-        //POST-Create
+        //POST-Update
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Update(Item obj)
