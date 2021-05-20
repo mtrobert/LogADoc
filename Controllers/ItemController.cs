@@ -1,5 +1,6 @@
 ﻿using LogADoc.Data;
 using LogADoc.Models;
+using LogADoc.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -20,30 +21,46 @@ namespace LogADoc.Controllers
         public IActionResult Index()
         {
             IEnumerable<Item> objList = _db.Items;
+
+            foreach (var item in objList)
+            {
+                item.Status = _db.Statoos.FirstOrDefault(s => s.Id == item.StatusId);
+            }
             return View(objList);
         }
 
         //GET-Create
         public IActionResult Create()
         {
-            IEnumerable<SelectListItem> StatusDropdown = _db.Statoos.Select(i => new SelectListItem 
-            {
-                Text = i.Name,
-                Value = i.Id.ToString()
-            });
+            //IEnumerable<SelectListItem> StatusDropdown = _db.Statoos.Select(i => new SelectListItem 
+            //{
+            //    Text = i.Name,
+            //    Value = i.Id.ToString()
+            //});
 
-            ViewBag.StatusDropdown = StatusDropdown;
-            return View();
+            //ViewBag.StatusDropdown = StatusDropdown;
+
+            ItemVM itemVM = new ItemVM
+            {
+                Item = new Item(),
+                StatusDropDown = _db.Statoos.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                })
+            };
+
+            return View(itemVM);
         }
 
         //POST-Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Item obj)
+        public IActionResult Create(ItemVM obj)
         {
             if (ModelState.IsValid)
             {
-                _db.Add(obj);
+                _db.Add(obj.Item);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -94,24 +111,40 @@ namespace LogADoc.Controllers
                 return NotFound();
             }
 
-            var obj = _db.Items.Find(id);
 
-            if (obj == null)
+            ItemVM itemVM = new ItemVM
+            {
+                Item = new Item(),
+                StatusDropDown = _db.Statoos.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                })
+            };
+            itemVM.Item = _db.Items.Find(id);
+        
+
+            if (itemVM.Item == null)
             {
                 return NotFound();
             }
-            return View(obj);
+            return View(itemVM);
 
         }
+
+
+        //////////////    update status not shown
+
+
 
         //POST-Update
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(Item obj)
+        public IActionResult Update(ItemVM obj)
         {
             if (ModelState.IsValid)
             {
-                _db.Update(obj);
+                _db.Update(obj.Item);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
