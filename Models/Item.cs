@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,8 +17,12 @@ namespace LogADoc.Models
         [DisplayName("Item Name")]
         public string Name { get; set; }
         public DateTime DateAdded { get; set; }
+
         [DisplayName("Status")]
-        public string Status { get; set; }
+        public int StatusId { get; set; }
+
+        [ForeignKey("StatusId")]
+        public virtual Status Status { get; set; }
 
         [Required(ErrorMessage = "Please set the current holder.")]
         [DisplayName("Current Holder")]

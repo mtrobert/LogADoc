@@ -49,10 +49,12 @@ namespace LogADoc.Migrations
                     b.Property<DateTime>("ReturnedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("Items");
                 });
@@ -75,6 +77,17 @@ namespace LogADoc.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statoos");
+                });
+
+            modelBuilder.Entity("LogADoc.Models.Item", b =>
+                {
+                    b.HasOne("LogADoc.Models.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Status");
                 });
 #pragma warning restore 612, 618
         }
