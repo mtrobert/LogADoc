@@ -75,14 +75,22 @@ namespace LogADoc.Controllers
             {
                 return NotFound();
             }
+            ItemVM itemVM = new ItemVM
+            {
+                Item = _db.Items.Find(id),
+                StatusDropDown = _db.Statoos.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                })
+            };
+            //var obj = _db.Items.Find(id);
 
-            var obj = _db.Items.Find(id);
-
-            if (obj == null)
+            if (itemVM.Item == null)
             {
                 return NotFound();
             }
-            return View(obj);
+            return View(itemVM);
 
         }
 
